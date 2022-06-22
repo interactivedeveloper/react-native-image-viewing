@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import { GestureResponderEvent, PanResponderGestureState, NativeTouchEvent } from "react-native";
+import { Animated, GestureResponderEvent, PanResponderGestureState, PanResponderInstance, NativeTouchEvent } from "react-native";
 import { Dimensions, Position } from "./@types";
 declare type CacheStorageItem = {
     key: string;
@@ -21,14 +21,16 @@ export declare const getImageTransform: (image: Dimensions | null, screen: Dimen
     readonly x: number;
     readonly y: number;
 }, number];
-export declare const getImageStyles: (image: Dimensions | null, translate: Animated.ValueXY, scale?: any) => {
+export declare const getImageStyles: (image: Dimensions | null, translate: Animated.ValueXY, scale?: Animated.Value | undefined) => {
     width: number;
     height: number;
     transform?: undefined;
 } | {
     width: number;
     height: number;
-    transform: any;
+    transform: {
+        [key: string]: Animated.Value;
+    }[];
 };
 export declare const getImageTranslate: (image: Dimensions, screen: Dimensions) => Position;
 export declare const getImageDimensionsByTranslate: (translate: Position, screen: Dimensions) => Dimensions;

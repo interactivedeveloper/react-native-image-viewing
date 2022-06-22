@@ -101,7 +101,7 @@ function ImageViewing({
 
   const onPre = useCallback(() => {
     if (currentImageIndex > 0) {
-      imageList.current.scrollToItem({
+      (imageList.current as any).scrollToItem({
         animated: true,
         item: images[currentImageIndex - 1],
       });
@@ -111,7 +111,7 @@ function ImageViewing({
 
   const onNext = useCallback(() => {
     if (currentImageIndex < images.length - 1) {
-      imageList.current.scrollToItem({
+      (imageList.current as any).scrollToItem({
         animated: true,
         item: images[currentImageIndex + 1],
       });

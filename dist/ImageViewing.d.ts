@@ -35,5 +35,5 @@ declare type Props = {
         onNext: () => void;
     }>;
 };
-declare const EnhancedImageViewing: (props: Props) => any;
+declare const EnhancedImageViewing: (props: Props) => JSX.Element;
 export default EnhancedImageViewing;

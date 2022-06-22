@@ -5,5 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-declare const useRequestClose: (onRequestClose: () => void) => readonly [any, () => void];
+declare const useRequestClose: (onRequestClose: () => void) => readonly [number, () => void];
 export default useRequestClose;
