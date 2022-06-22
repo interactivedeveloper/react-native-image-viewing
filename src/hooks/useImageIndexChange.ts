@@ -6,10 +6,10 @@
  *
  */
 
-import { useState } from "react";
-import { NativeSyntheticEvent, NativeScrollEvent } from "react-native";
+import { useState } from 'react';
+import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 
-import { Dimensions } from "../@types";
+import { Dimensions } from '../@types';
 
 const useImageIndexChange = (imageIndex: number, screen: Dimensions) => {
   const [currentImageIndex, setImageIndex] = useState(imageIndex);
@@ -26,7 +26,7 @@ const useImageIndexChange = (imageIndex: number, screen: Dimensions) => {
     }
   };
 
-  return [currentImageIndex, onScroll] as const;
+  return [currentImageIndex, onScroll, setImageIndex] as const;
 };
 
 export default useImageIndexChange;

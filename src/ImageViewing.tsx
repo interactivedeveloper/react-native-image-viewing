@@ -6,25 +6,24 @@
  *
  */
 
-import React, { ComponentType, useCallback, useRef, useEffect } from "react";
+import React, { ComponentType, useCallback, useEffect, useRef } from 'react';
 import {
   Animated,
   Dimensions,
+  Modal,
+  ModalProps,
   StyleSheet,
   View,
   VirtualizedList,
-  ModalProps,
-  Modal,
-} from "react-native";
+} from 'react-native';
 
-import ImageItem from "./components/ImageItem/ImageItem";
-import ImageDefaultHeader from "./components/ImageDefaultHeader";
-import StatusBarManager from "./components/StatusBarManager";
-
-import useAnimatedComponents from "./hooks/useAnimatedComponents";
-import useImageIndexChange from "./hooks/useImageIndexChange";
-import useRequestClose from "./hooks/useRequestClose";
-import { ImageSource } from "./@types";
+import { ImageSource } from './@types';
+import ImageDefaultHeader from './components/ImageDefaultHeader';
+import ImageItem from './components/ImageItem/ImageItem';
+import StatusBarManager from './components/StatusBarManager';
+import useAnimatedComponents from './hooks/useAnimatedComponents';
+import useImageIndexChange from './hooks/useImageIndexChange';
+import useRequestClose from './hooks/useRequestClose';
 
 type Props = {
   images: ImageSource[];
@@ -42,6 +41,12 @@ type Props = {
   delayLongPress?: number;
   HeaderComponent?: ComponentType<{ imageIndex: number }>;
   FooterComponent?: ComponentType<{ imageIndex: number }>;
+  ArrowLeftComponent?: ComponentType<{
+    onPre: () => void;
+  }>;
+  ArrowRightComponent?: ComponentType<{
+    onNext: () => void;
+  }>;
 };
 
 const DEFAULT_ANIMATION_TYPE = "fade";
@@ -49,6 +54,7 @@ const DEFAULT_BG_COLOR = "#000";
 const DEFAULT_DELAY_LONG_PRESS = 800;
 const SCREEN = Dimensions.get("screen");
 const SCREEN_WIDTH = SCREEN.width;
+const WINDOW = Dimensions.get("window");
 
 function ImageViewing({
   images,
@@ -66,10 +72,15 @@ function ImageViewing({
   delayLongPress = DEFAULT_DELAY_LONG_PRESS,
   HeaderComponent,
   FooterComponent,
+  ArrowLeftComponent,
+  ArrowRightComponent,
 }: Props) {
   const imageList = useRef<VirtualizedList<ImageSource>>(null);
   const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
-  const [currentImageIndex, onScroll] = useImageIndexChange(imageIndex, SCREEN);
+  const [currentImageIndex, onScroll, setImageIndex] = useImageIndexChange(
+    imageIndex,
+    SCREEN
+  );
   const [headerTransform, footerTransform, toggleBarsVisible] =
     useAnimatedComponents();
 
@@ -87,6 +98,26 @@ function ImageViewing({
     },
     [imageList]
   );
+
+  const onPre = useCallback(() => {
+    if (currentImageIndex > 0) {
+      imageList.current.scrollToItem({
+        animated: true,
+        item: images[currentImageIndex - 1],
+      });
+      setImageIndex((currentImageIndex) => currentImageIndex - 1);
+    }
+  }, [setImageIndex]);
+
+  const onNext = useCallback(() => {
+    if (currentImageIndex < images.length - 1) {
+      imageList.current.scrollToItem({
+        animated: true,
+        item: images[currentImageIndex + 1],
+      });
+      setImageIndex((currentImageIndex) => currentImageIndex + 1);
+    }
+  }, [setImageIndex]);
 
   if (!visible) {
     return null;
@@ -152,6 +183,20 @@ function ImageViewing({
               : imageSrc.uri
           }
         />
+        {typeof ArrowLeftComponent !== "undefined" && (
+          <View style={styles.arrowLeft}>
+            {React.createElement(ArrowLeftComponent, {
+              onPre,
+            })}
+          </View>
+        )}
+        {typeof ArrowRightComponent !== "undefined" && (
+          <View style={styles.arrowRight}>
+            {React.createElement(ArrowRightComponent, {
+              onNext,
+            })}
+          </View>
+        )}
         {typeof FooterComponent !== "undefined" && (
           <Animated.View
             style={[styles.footer, { transform: footerTransform }]}
@@ -182,6 +227,18 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 1,
     bottom: 0,
+  },
+  arrowLeft: {
+    position: "absolute",
+    zIndex: 2,
+    left: 15,
+    bottom: WINDOW.height / 2 - 11,
+  },
+  arrowRight: {
+    position: "absolute",
+    zIndex: 2,
+    right: 15,
+    bottom: WINDOW.height / 2 - 11,
   },
 });
 
