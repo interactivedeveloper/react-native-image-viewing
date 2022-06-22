@@ -35,7 +35,7 @@ function ImageViewing({ images, keyExtractor, imageIndex, visible, onRequestClos
         (_b = (_a = imageList) === null || _a === void 0 ? void 0 : _a.current) === null || _b === void 0 ? void 0 : _b.setNativeProps({ scrollEnabled: !isScaled });
         toggleBarsVisible(!isScaled);
     }, [imageList]);
-    const onPre = useCallback(() => {
+    const onPre = () => {
         if (currentImageIndex > 0) {
             imageList.current.scrollToItem({
                 animated: true,
@@ -43,8 +43,8 @@ function ImageViewing({ images, keyExtractor, imageIndex, visible, onRequestClos
             });
             setImageIndex((currentImageIndex) => currentImageIndex - 1);
         }
-    }, [setImageIndex]);
-    const onNext = useCallback(() => {
+    };
+    const onNext = () => {
         if (currentImageIndex < images.length - 1) {
             imageList.current.scrollToItem({
                 animated: true,
@@ -52,7 +52,7 @@ function ImageViewing({ images, keyExtractor, imageIndex, visible, onRequestClos
             });
             setImageIndex((currentImageIndex) => currentImageIndex + 1);
         }
-    }, [setImageIndex]);
+    };
     if (!visible) {
         return null;
     }

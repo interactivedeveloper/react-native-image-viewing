@@ -99,7 +99,7 @@ function ImageViewing({
     [imageList]
   );
 
-  const onPre = useCallback(() => {
+  const onPre = () => {
     if (currentImageIndex > 0) {
       (imageList.current as any).scrollToItem({
         animated: true,
@@ -107,9 +107,9 @@ function ImageViewing({
       });
       setImageIndex((currentImageIndex) => currentImageIndex - 1);
     }
-  }, [setImageIndex]);
+  };
 
-  const onNext = useCallback(() => {
+  const onNext = () => {
     if (currentImageIndex < images.length - 1) {
       (imageList.current as any).scrollToItem({
         animated: true,
@@ -117,7 +117,7 @@ function ImageViewing({
       });
       setImageIndex((currentImageIndex) => currentImageIndex + 1);
     }
-  }, [setImageIndex]);
+  };
 
   if (!visible) {
     return null;
