@@ -114,13 +114,13 @@ const styles = StyleSheet.create({
         position: "absolute",
         zIndex: 2,
         left: 15,
-        bottom: WINDOW.height / 2 - 11,
+        top: WINDOW.height / 2 - 11,
     },
     arrowRight: {
         position: "absolute",
         zIndex: 2,
         right: 15,
-        bottom: WINDOW.height / 2 - 11,
+        top: WINDOW.height / 2 - 11,
     },
 });
 const EnhancedImageViewing = (props) => (<ImageViewing key={props.imageIndex} {...props}/>);
