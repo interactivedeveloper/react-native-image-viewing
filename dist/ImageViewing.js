@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState, } from 'react';
 import { Animated, Dimensions, Modal, StyleSheet, View, VirtualizedList, } from 'react-native';
 import ImageDefaultHeader from './components/ImageDefaultHeader';
 import ImageItem from './components/ImageItem/ImageItem';
@@ -16,10 +16,20 @@ import useRequestClose from './hooks/useRequestClose';
 const DEFAULT_ANIMATION_TYPE = "fade";
 const DEFAULT_BG_COLOR = "#000";
 const DEFAULT_DELAY_LONG_PRESS = 800;
-const SCREEN = Dimensions.get("screen");
-const SCREEN_WIDTH = SCREEN.width;
-const WINDOW = Dimensions.get("window");
 function ImageViewing({ images, keyExtractor, imageIndex, visible, onRequestClose, onLongPress = () => { }, onImageIndexChange, animationType = DEFAULT_ANIMATION_TYPE, backgroundColor = DEFAULT_BG_COLOR, presentationStyle, swipeToCloseEnabled, doubleTapToZoomEnabled, delayLongPress = DEFAULT_DELAY_LONG_PRESS, HeaderComponent, FooterComponent, ArrowLeftComponent, ArrowRightComponent, }) {
+    const [dimensions, setDimensions] = useState({
+        window: Dimensions.get("window"),
+        screen: Dimensions.get("screen"),
+    });
+    const SCREEN = dimensions.screen;
+    const SCREEN_WIDTH = SCREEN.width;
+    const WINDOW = dimensions.window;
+    useEffect(() => {
+        const subscription = Dimensions.addEventListener("change", ({ window, screen }) => {
+            setDimensions({ window, screen });
+        });
+        return () => { var _a; return (_a = subscription) === null || _a === void 0 ? void 0 : _a.remove(); };
+    });
     const imageList = useRef(null);
     const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
     const [currentImageIndex, onScroll, setImageIndex] = useImageIndexChange(imageIndex, SCREEN);
@@ -75,12 +85,12 @@ function ImageViewing({ images, keyExtractor, imageIndex, visible, onRequestClos
         : typeof imageSrc === "number"
             ? `${imageSrc}`
             : imageSrc.uri}/>
-        {typeof ArrowLeftComponent !== "undefined" && (<View style={styles.arrowLeft}>
+        {typeof ArrowLeftComponent !== "undefined" && (<View style={[styles.arrowLeft, { top: WINDOW.height / 2 - 11 }]}>
             {React.createElement(ArrowLeftComponent, {
         onPre,
     })}
           </View>)}
-        {typeof ArrowRightComponent !== "undefined" && (<View style={styles.arrowRight}>
+        {typeof ArrowRightComponent !== "undefined" && (<View style={[styles.arrowRight, { top: WINDOW.height / 2 - 11 }]}>
             {React.createElement(ArrowRightComponent, {
         onNext,
     })}
@@ -114,13 +124,11 @@ const styles = StyleSheet.create({
         position: "absolute",
         zIndex: 2,
         left: 15,
-        top: WINDOW.height / 2 - 11,
     },
     arrowRight: {
         position: "absolute",
         zIndex: 2,
         right: 15,
-        top: WINDOW.height / 2 - 11,
     },
 });
 const EnhancedImageViewing = (props) => (<ImageViewing key={props.imageIndex} {...props}/>);

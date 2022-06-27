@@ -6,7 +6,13 @@
  *
  */
 
-import React, { ComponentType, useCallback, useEffect, useRef } from 'react';
+import React, {
+  ComponentType,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   Animated,
   Dimensions,
@@ -52,9 +58,6 @@ type Props = {
 const DEFAULT_ANIMATION_TYPE = "fade";
 const DEFAULT_BG_COLOR = "#000";
 const DEFAULT_DELAY_LONG_PRESS = 800;
-const SCREEN = Dimensions.get("screen");
-const SCREEN_WIDTH = SCREEN.width;
-const WINDOW = Dimensions.get("window");
 
 function ImageViewing({
   images,
@@ -75,6 +78,24 @@ function ImageViewing({
   ArrowLeftComponent,
   ArrowRightComponent,
 }: Props) {
+  const [dimensions, setDimensions] = useState({
+    window: Dimensions.get("window"),
+    screen: Dimensions.get("screen"),
+  });
+  const SCREEN = dimensions.screen;
+  const SCREEN_WIDTH = SCREEN.width;
+  const WINDOW = dimensions.window;
+
+  useEffect(() => {
+    const subscription: any = Dimensions.addEventListener(
+      "change",
+      ({ window, screen }) => {
+        setDimensions({ window, screen });
+      }
+    );
+    return () => subscription?.remove();
+  });
+
   const imageList = useRef<VirtualizedList<ImageSource>>(null);
   const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
   const [currentImageIndex, onScroll, setImageIndex] = useImageIndexChange(
@@ -184,14 +205,14 @@ function ImageViewing({
           }
         />
         {typeof ArrowLeftComponent !== "undefined" && (
-          <View style={styles.arrowLeft}>
+          <View style={[styles.arrowLeft, { top: WINDOW.height / 2 - 11 }]}>
             {React.createElement(ArrowLeftComponent, {
               onPre,
             })}
           </View>
         )}
         {typeof ArrowRightComponent !== "undefined" && (
-          <View style={styles.arrowRight}>
+          <View style={[styles.arrowRight, { top: WINDOW.height / 2 - 11 }]}>
             {React.createElement(ArrowRightComponent, {
               onNext,
             })}
@@ -232,13 +253,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 2,
     left: 15,
-    top: WINDOW.height / 2 - 11,
   },
   arrowRight: {
     position: "absolute",
     zIndex: 2,
     right: 15,
-    top: WINDOW.height / 2 - 11,
   },
 });
 

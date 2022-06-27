@@ -5,17 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import { useMemo, useEffect } from "react";
-import { Animated, Dimensions, } from "react-native";
-import { createPanResponder, getDistanceBetweenTouches, getImageTranslate, getImageDimensionsByTranslate, } from "../utils";
-const SCREEN = Dimensions.get("window");
-const SCREEN_WIDTH = SCREEN.width;
-const SCREEN_HEIGHT = SCREEN.height;
-const MIN_DIMENSION = Math.min(SCREEN_WIDTH, SCREEN_HEIGHT);
+import { useEffect, useMemo, useState } from 'react';
+import { Animated, Dimensions, } from 'react-native';
+import { createPanResponder, getDistanceBetweenTouches, getImageDimensionsByTranslate, getImageTranslate, } from '../utils';
 const SCALE_MAX = 2;
 const DOUBLE_TAP_DELAY = 300;
 const OUT_BOUND_MULTIPLIER = 0.75;
 const usePanResponder = ({ initialScale, initialTranslate, onZoom, doubleTapToZoomEnabled, onLongPress, delayLongPress, }) => {
+    const [dimensions, setDimensions] = useState({
+        window: Dimensions.get("window"),
+        screen: Dimensions.get("screen"),
+    });
+    const SCREEN = dimensions.screen;
+    const SCREEN_WIDTH = SCREEN.width;
+    const SCREEN_HEIGHT = SCREEN.height;
+    const MIN_DIMENSION = Math.min(SCREEN_WIDTH, SCREEN_HEIGHT);
+    useEffect(() => {
+        const subscription = Dimensions.addEventListener("change", ({ window, screen }) => {
+            setDimensions({ window, screen });
+        });
+        return () => { var _a; return (_a = subscription) === null || _a === void 0 ? void 0 : _a.remove(); };
+    });
     let numberInitialTouches = 1;
     let initialTouches = [];
     let currentScale = initialScale;
