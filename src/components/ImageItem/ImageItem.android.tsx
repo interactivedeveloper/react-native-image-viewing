@@ -48,7 +48,7 @@ const ImageItem = ({
     window: Dimensions.get("window"),
     screen: Dimensions.get("screen"),
   });
-  const SCREEN = dimensions.screen;
+  const SCREEN = dimensions.window;
   const SCREEN_WIDTH = SCREEN.width;
   const SCREEN_HEIGHT = SCREEN.height;
 
