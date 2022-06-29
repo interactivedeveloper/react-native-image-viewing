@@ -31,8 +31,8 @@ function ImageViewing({ images, keyExtractor, imageIndex, visible, onRequestClos
         return () => { var _a; return (_a = subscription) === null || _a === void 0 ? void 0 : _a.remove(); };
     });
     const imageList = useRef(null);
-    const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
     const [currentImageIndex, onScroll, setImageIndex] = useImageIndexChange(imageIndex, SCREEN);
+    const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose, setImageIndex);
     const [headerTransform, footerTransform, toggleBarsVisible] = useAnimatedComponents();
     useEffect(() => {
         if (onImageIndexChange) {
@@ -72,6 +72,7 @@ function ImageViewing({ images, keyExtractor, imageIndex, visible, onRequestClos
         <Animated.View style={[styles.header, { transform: headerTransform }]}>
           {typeof HeaderComponent !== "undefined" ? (React.createElement(HeaderComponent, {
         imageIndex: currentImageIndex,
+        onRequestClose: onRequestCloseEnhanced,
     })) : (<ImageDefaultHeader onRequestClose={onRequestCloseEnhanced}/>)}
         </Animated.View>
         <VirtualizedList ref={imageList} data={images} horizontal pagingEnabled windowSize={2} initialNumToRender={1} maxToRenderPerBatch={1} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} initialScrollIndex={imageIndex} getItem={(_, index) => images[index]} getItemCount={() => images.length} getItemLayout={(_, index) => ({

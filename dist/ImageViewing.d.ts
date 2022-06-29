@@ -24,6 +24,7 @@ declare type Props = {
     delayLongPress?: number;
     HeaderComponent?: ComponentType<{
         imageIndex: number;
+        onRequestClose: () => void;
     }>;
     FooterComponent?: ComponentType<{
         imageIndex: number;

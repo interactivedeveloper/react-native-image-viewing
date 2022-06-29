@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import { useState } from "react";
-const useRequestClose = (onRequestClose) => {
+import { useState } from 'react';
+const useRequestClose = (onRequestClose, setImageIndex) => {
     const [opacity, setOpacity] = useState(1);
     return [
         opacity,
         () => {
+            setImageIndex(0);
             setOpacity(0);
             onRequestClose();
             setTimeout(() => setOpacity(1), 0);

@@ -6,14 +6,18 @@
  *
  */
 
-import { useState } from "react";
+import { useState } from 'react';
 
-const useRequestClose = (onRequestClose: () => void) => {
+const useRequestClose = (
+  onRequestClose: () => void,
+  setImageIndex: (n: number) => void
+) => {
   const [opacity, setOpacity] = useState(1);
 
   return [
     opacity,
     () => {
+      setImageIndex(0);
       setOpacity(0);
       onRequestClose();
       setTimeout(() => setOpacity(1), 0);

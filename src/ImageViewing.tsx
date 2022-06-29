@@ -45,7 +45,10 @@ type Props = {
   swipeToCloseEnabled?: boolean;
   doubleTapToZoomEnabled?: boolean;
   delayLongPress?: number;
-  HeaderComponent?: ComponentType<{ imageIndex: number }>;
+  HeaderComponent?: ComponentType<{
+    imageIndex: number;
+    onRequestClose: () => void;
+  }>;
   FooterComponent?: ComponentType<{ imageIndex: number }>;
   ArrowLeftComponent?: ComponentType<{
     onPre: () => void;
@@ -97,10 +100,13 @@ function ImageViewing({
   });
 
   const imageList = useRef<VirtualizedList<ImageSource>>(null);
-  const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
   const [currentImageIndex, onScroll, setImageIndex] = useImageIndexChange(
     imageIndex,
     SCREEN
+  );
+  const [opacity, onRequestCloseEnhanced] = useRequestClose(
+    onRequestClose,
+    setImageIndex
   );
   const [headerTransform, footerTransform, toggleBarsVisible] =
     useAnimatedComponents();
@@ -160,6 +166,7 @@ function ImageViewing({
           {typeof HeaderComponent !== "undefined" ? (
             React.createElement(HeaderComponent, {
               imageIndex: currentImageIndex,
+              onRequestClose: onRequestCloseEnhanced,
             })
           ) : (
             <ImageDefaultHeader onRequestClose={onRequestCloseEnhanced} />
